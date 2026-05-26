@@ -1,10 +1,466 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="zh-CN">
 <head>
-    <title>My Website</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WDO项目系统演示手册</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --sub: #5b6475;
+      --line: #e5e7eb;
+      --brand: #355cff;
+      --brand2: #6d5efc;
+      --shadow: 0 10px 30px rgba(35, 55, 110, 0.08);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg,#eef3ff 0%, var(--bg) 320px);
+      line-height: 1.7;
+    }
+    .layout {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 280px minmax(0,1fr);
+      gap: 24px;
+    }
+    .sidebar {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+      padding: 20px;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: .4px;
+      margin-bottom: 6px;
+    }
+    .desc { color: var(--sub); font-size: 14px; margin-bottom: 18px; }
+    .toc a {
+      display: block;
+      text-decoration: none;
+      color: #334155;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    .toc a:hover { background: #eef2ff; color: var(--brand); }
+    .main { min-width: 0; }
+    .hero {
+      background: radial-gradient(circle at top right, rgba(109,94,252,.22), transparent 30%), linear-gradient(135deg,#102a8e,#3848f3 55%, #5c8bff);
+      color: white;
+      border-radius: 28px;
+      padding: 32px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .hero h1 { font-size: 38px; line-height: 1.2; margin: 0 0 12px; }
+    .hero p { margin: 0 0 14px; color: rgba(255,255,255,.92); }
+    .tag {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
+      font-size: 13px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,.08);
+    }
+    .hero img, .shot img, .gallery img {
+      width: 100%;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 18px 50px rgba(0,0,0,.18);
+    }
+    .panel, .section {
+      background: var(--card);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(15,23,42,.04);
+    }
+    .panel h2, .section h2 { margin-top: 0; font-size: 28px; }
+    .lead { color: var(--sub); }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(7,1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .flow div {
+      background: linear-gradient(180deg,#f7f9ff,#eef2ff);
+      border: 1px solid #dde5ff;
+      border-radius: 16px;
+      padding: 14px 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #304468;
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .index {
+      min-width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg,#ecf0ff,#e2e7ff);
+      color: var(--brand);
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .subtitle { color: var(--sub); margin: 0; }
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .steps {
+      margin: 0;
+      padding-left: 22px;
+    }
+    .steps li { margin-bottom: 12px; }
+    .note {
+      margin-top: 14px;
+      background: #f7f9fc;
+      border-left: 4px solid var(--brand);
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: #475569;
+      font-size: 14px;
+    }
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .feature-list div {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fcfdff;
+    }
+    .feature-list strong { display: block; margin-bottom: 6px; }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .small { font-size: 13px; color: var(--sub); }
+    .footer {
+      text-align: center;
+      color: var(--sub);
+      padding: 16px 0 28px;
+      font-size: 14px;
+    }
+    @media (max-width: 1100px) {
+      .layout, .hero-grid, .content-grid { grid-template-columns: 1fr; }
+      .sidebar { position: relative; top: 0; }
+      .flow { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 720px) {
+      .layout { padding: 14px; }
+      .hero { padding: 22px; }
+      .panel, .section { padding: 20px; }
+      .hero h1 { font-size: 30px; }
+      .feature-list, .gallery { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <p>My first GitHub Pages website.</p >
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">WDO 项目系统演示手册</div>
+      <div class="desc">网页版说明文档｜按步骤理解系统功能与演示路径</div>
+      <nav class="toc">
+        <a href="#overview">项目概览</a>
+        <a href="#register">1. 会员注册</a>
+        <a href="#member">2. 会员信息管理</a>
+        <a href="#apply">3. 参会报名</a>
+        <a href="#checkin">4. 电子签到</a>
+        <a href="#vote">5. 电子投票</a>
+        <a href="#qrcode">6. 二维码管理</a>
+        <a href="#website">7. 中英文官网</a>
+        <a href="#summary">总结</a>
+      </nav>
+      <div class="note">
+        本手册基于你提供的设计资源整理。当前设计包里，官网界面最完整；后台部分以框架页为主，所以后台模块采用“业务步骤 + 对应界面位置说明”的方式来帮助理解。
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="tag">图文手册</div>
+            <div class="tag">演示顺序版</div>
+            <div class="tag">适合培训/汇报</div>
+            <h1>WDO 项目系统<br>图文演示手册</h1>
+            <p>这是一份更接近 Markdown 文档体验的网页说明书。你可以直接滚动阅读，按系统演示顺序理解整体业务：从会员注册，到报名参会、现场签到、电子投票，再到二维码管理与中英文官网展示。</p>
+            <p>适用场景：需求沟通、系统培训、内部讲解、客户演示、交付文档。</p>
+          </div>
+          <div>
+            <img src="wdo_extracted/Desktop - 4.png" alt="WDO官网设计图" />
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="overview">
+        <h2>项目概览</h2>
+        <p class="lead">WDO 项目系统面向会议与组织运营场景，覆盖会前、会中、会后的关键环节，既包含面向用户的官网与报名入口，也包含面向运营人员的后台管理能力。</p>
+        <div class="flow">
+          <div>会员注册</div>
+          <div>会员信息管理</div>
+          <div>参会报名</div>
+          <div>电子签到</div>
+          <div>电子投票</div>
+          <div>二维码管理</div>
+          <div>中英文官网</div>
+        </div>
+        <div class="feature-list">
+          <div><strong>统一会员体系</strong>围绕组织成员建立统一身份与资料档案，为报名、签到、投票等业务打通数据基础。</div>
+          <div><strong>会议活动数字化</strong>将参会报名、现场签到、会中互动等关键流程线上化，减少人工统计和现场排队。</div>
+          <div><strong>二维码贯穿全流程</strong>可作为报名凭证、签到凭证和身份识别凭证，提高核验效率。</div>
+          <div><strong>官网国际化展示</strong>通过中英文官网进行项目介绍、活动展示与对外传播，提升组织形象。</div>
+        </div>
+      </section>
+
+      <section class="section" id="register">
+        <div class="section-head">
+          <div>
+            <h2><span class="index">1</span> 会员注册</h2>
+            <p class="subtitle">建立统一账户，是用户进入系统的第一步。</p>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div>
+            <ol class="steps">
+              <li>用户进入官网或活动入口页，点击“注册”或“申请加入组织”。</li>
+              <li>填写基础资料，如姓名、单位、联系方式、身份属性等信息。</li>
+              <li>提交后，系统生成会员账户或待审核记录，作为后续报名和签到的身份基础。</li>
+              <li>注册成功后，用户可继续完善资料，进入会员信息管理流程。</li>
+            </ol>
+            <div class="note">演示时可以强调：注册不是孤立功能，而是后续所有业务的入口。只有建立统一身份，系统才能把报名、签到、投票等行为串起来。</div>
+            <div class="feature-list">
+              <div><strong>标准化采集</strong>线上统一采集会员基础信息，减少线下登记误差。</div>
+              <div><strong>降低重复录入</strong>后续参会报名可复用已注册信息，提升填写效率。</div>
+            </div>
+          </div>
+          <div class="shot">
+            <img src="wdo_extracted/APP端主k.png" alt="活动视觉入口" />
+            <div class="small">可作为注册/活动入口视觉展示图，用于说明用户首先从前台入口进入系统。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="member">
+        <div class="section-head">
+          <div>
+            <h2><span class="index">2</span> 会员信息管理</h2>
+            <p class="subtitle">对会员档案进行维护、查询和更新，形成长期可用的数据资产。</p>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div>
+            <ol class="steps">
+              <li>会员注册完成后，后台形成对应的会员档案。</li>
+              <li>管理人员可以查看会员基础信息，并进行补充、修正或审核。</li>
+              <li>会员资料可在后续活动报名、资格校验、消息通知中持续复用。</li>
+              <li>当会员信息发生变化时，系统支持统一更新，避免信息分散在多个表单中。</li>
+            </ol>
+            <div class="note">这一部分可重点突出“统一管理”和“数据沉淀”。对组织来说，会员信息管理不仅是维护资料，更是后续所有服务能力的基础。</div>
+          </div>
+          <div class="shot">
+            <img src="wdo_extracted/WDO管理后台.png" alt="后台管理框架页" />
+            <div class="small">设计包中的后台图以框架页为主，可用来讲解“管理端统一维护会员数据”的后台位置。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="apply">
+        <div class="section-head">
+          <div>
+            <h2><span class="index">3</span> 参会报名</h2>
+            <p class="subtitle">将具体活动与会员身份绑定，完成会前报名组织。</p>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div>
+            <ol class="steps">
+              <li>用户进入活动详情页，查看会议名称、时间、地点、议程或简介。</li>
+              <li>点击报名后，系统自动带出已注册的部分信息，减少重复填写。</li>
+              <li>根据会议要求补充参会信息，如出席类型、单位信息、联系方式等。</li>
+              <li>报名成功后，系统为后续签到和二维码核验准备对应记录。</li>
+            </ol>
+            <div class="note">讲解时可以突出：活动报名与会员体系打通后，用户体验会更好，主办方也更容易掌握报名规模和人员结构。</div>
+          </div>
+          <div class="shot">
+            <img src="wdo_crops/website_activity.png" alt="官网活动展示区域" />
+            <div class="small">官网中的“重要活动”区域，可作为参会报名入口和活动详情展示的前台示意。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="checkin">
+        <div class="section-head">
+          <div>
+            <h2><span class="index">4</span> 电子签到</h2>
+            <p class="subtitle">用电子凭证替代纸质签到，实现更快的现场核验。</p>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div>
+            <ol class="steps">
+              <li>报名成功后，系统为参会人员生成电子签到凭证。</li>
+              <li>参会人员到场后，出示二维码或电子身份信息。</li>
+              <li>现场工作人员通过系统扫码或核验，快速确认到场状态。</li>
+              <li>签到数据实时回写后台，主办方可以即时查看到场情况。</li>
+            </ol>
+            <div class="note">这一部分适合强调两点：第一是提升入场效率，第二是签到数据可实时统计，为会务组织提供实时掌控能力。</div>
+          </div>
+          <div class="shot">
+            <img src="wdo_extracted/icon_头像.png" alt="电子身份图标" />
+            <div class="small">设计资源中的身份图标，可辅助说明电子签到依赖个人电子身份与凭证。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="vote">
+        <div class="section-head">
+          <div>
+            <h2><span class="index">5</span> 电子投票</h2>
+            <p class="subtitle">支撑表决、评选、意见征集等会中互动场景。</p>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div>
+            <ol class="steps">
+              <li>管理端创建投票议题，设置投票对象、选项和参与范围。</li>
+              <li>参会人员通过手机端或会议入口进入投票页面。</li>
+              <li>用户完成选择后提交，系统自动记录结果并防止重复投票。</li>
+              <li>后台实时汇总票数，用于会议现场展示或会后存档。</li>
+            </ol>
+            <div class="note">即使当前设计包里没有完整的投票详情页，也可以把这一模块讲成“会议数字化互动能力”的一部分，与签到、二维码一起构成会中服务闭环。</div>
+          </div>
+          <div class="shot">
+            <img src="wdo_extracted/APP端主k-1.png" alt="移动端活动视觉图" />
+            <div class="small">移动端活动视觉图可作为会中交互入口示意，说明投票通常在手机端完成。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="qrcode">
+        <div class="section-head">
+          <div>
+            <h2><span class="index">6</span> 二维码管理</h2>
+            <p class="subtitle">二维码是连接报名、签到和身份核验的关键媒介。</p>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div>
+            <ol class="steps">
+              <li>系统根据报名记录或会员身份生成专属二维码。</li>
+              <li>二维码可关联参会信息、人员身份和签到状态。</li>
+              <li>工作人员通过扫描二维码完成现场识别、核验和签到。</li>
+              <li>若存在分会场、嘉宾类别或不同权限，也可以通过二维码进行区分管理。</li>
+            </ol>
+            <div class="note">这一模块建议和电子签到一起讲。你可以把二维码描述为“系统全流程的统一凭证”，这样观众更容易理解它的重要性。</div>
+          </div>
+          <div class="shot">
+            <img src="wdo_extracted/特殊按钮.png" alt="系统按钮组件图" />
+            <div class="small">组件资源可辅助说明系统会生成可操作的电子凭证、入口按钮和核验动作。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="website">
+        <div class="section-head">
+          <div>
+            <h2><span class="index">7</span> 中英文官网</h2>
+            <p class="subtitle">对外展示组织形象、活动信息和重点内容的统一窗口。</p>
+          </div>
+        </div>
+        <div class="content-grid">
+          <div>
+            <ol class="steps">
+              <li>用户访问官网首页，第一时间看到组织定位、活动主视觉和核心信息。</li>
+              <li>通过导航可进入关于组织、重要活动、新闻中心、会员中心、资源中心等栏目。</li>
+              <li>官网既承担品牌展示，也承担会员服务与活动入口的前台承接作用。</li>
+              <li>支持中英文内容展示后，可以进一步满足国际化传播与跨区域访问需求。</li>
+            </ol>
+            <div class="feature-list">
+              <div><strong>品牌展示</strong>首页主视觉、组织介绍、成立宣言、重点工作等模块共同塑造专业形象。</div>
+              <div><strong>活动承接</strong>重要活动区可以直接成为报名、查看详情和传播的入口。</div>
+              <div><strong>资源输出</strong>白皮书、资讯、宣传片等内容可作为外部传播资料。</div>
+              <div><strong>国际化表达</strong>中英文双语官网有利于面向国际组织、行业伙伴和海外访客进行传播。</div>
+            </div>
+          </div>
+          <div class="shot">
+            <img src="wdo_extracted/Desktop - 4.png" alt="WDO官网首页完整设计图" />
+            <div class="small">这是当前设计包里最完整的一张官网首页图，适合在演示中重点展示。</div>
+          </div>
+        </div>
+        <div class="gallery">
+          <div>
+            <img src="wdo_extracted/APP端主k.png" alt="活动主视觉图" />
+            <div class="small">活动主视觉，可用于中英文站首页 Banner 或专题页首屏。</div>
+          </div>
+          <div>
+            <img src="wdo_crops/website_activity.png" alt="官网活动模块图" />
+            <div class="small">活动列表/详情模块示意，适合用于讲“官网与活动系统联动”。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="summary">
+        <h2>总结与讲解建议</h2>
+        <p class="lead">整套系统可以概括为一句话：以会员体系为基础，以会议活动为核心，以官网为对外窗口，形成前后台协同的一体化数字平台。</p>
+        <ol class="steps">
+          <li>先从官网或活动入口切入，展示系统整体形象与业务场景。</li>
+          <li>再按“会员注册 → 会员信息管理 → 参会报名”讲清楚会前流程。</li>
+          <li>接着讲“电子签到 → 电子投票 → 二维码管理”，体现会中数字化能力。</li>
+          <li>最后回到“中英文官网”，收束到品牌展示与国际化传播价值。</li>
+        </ol>
+        <div class="note">这份网页版手册更适合在线阅读和培训。如果你下一步需要，我可以继续把它改成更像产品帮助中心的样式，比如加折叠目录、图片放大、每一步的操作提示框、甚至导出成可分享的单文件 HTML。</div>
+      </section>
+
+      <div class="footer">WDO 项目系统图文演示手册 · 由设计资源整理生成</div>
+    </main>
+  </div>
 </body>
 </html>
