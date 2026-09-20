@@ -1,466 +1,729 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WDO项目系统演示手册</title>
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --sub: #5b6475;
-      --line: #e5e7eb;
-      --brand: #355cff;
-      --brand2: #6d5efc;
-      --shadow: 0 10px 30px rgba(35, 55, 110, 0.08);
-      --radius: 18px;
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>Six projects — STAR, stacks and mechanisms</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --paper:#e9edf2; --surface:#fff; --surface-2:#f4f7fa; --code:#f6f8fb;
+    --ink:#0f1b2d; --mute:#5c6b80; --wire:#d2dae4; --wire-soft:#e4eaf1;
+    --go:#0f9d58; --go-ink:#07603a; --go-wash:#e7f6ee;
+    --vio:#5238e8; --vio-wash:#ece9ff;
+    --hot:#c8321c; --hot-wash:#fdeceb; --rad:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0b1118; --surface:#121a24; --surface-2:#182231; --code:#0e161f;
+      --ink:#e8eef6; --mute:#93a3b8; --wire:#2a3646; --wire-soft:#1e2937;
+      --go:#3ddc8a; --go-ink:#8ff0bd; --go-wash:#10301f;
+      --vio:#a698ff; --vio-wash:#221d44; --hot:#ff8064; --hot-wash:#3a1b16;
     }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-      color: var(--text);
-      background: linear-gradient(180deg,#eef3ff 0%, var(--bg) 320px);
-      line-height: 1.7;
-    }
-    .layout {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 280px minmax(0,1fr);
-      gap: 24px;
-    }
-    .sidebar {
-      position: sticky;
-      top: 16px;
-      align-self: start;
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.7);
-      box-shadow: var(--shadow);
-      border-radius: 22px;
-      padding: 20px;
-    }
-    .logo {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: .4px;
-      margin-bottom: 6px;
-    }
-    .desc { color: var(--sub); font-size: 14px; margin-bottom: 18px; }
-    .toc a {
-      display: block;
-      text-decoration: none;
-      color: #334155;
-      padding: 10px 12px;
-      border-radius: 12px;
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-    .toc a:hover { background: #eef2ff; color: var(--brand); }
-    .main { min-width: 0; }
-    .hero {
-      background: radial-gradient(circle at top right, rgba(109,94,252,.22), transparent 30%), linear-gradient(135deg,#102a8e,#3848f3 55%, #5c8bff);
-      color: white;
-      border-radius: 28px;
-      padding: 32px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      margin-bottom: 24px;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 24px;
-      align-items: center;
-    }
-    .hero h1 { font-size: 38px; line-height: 1.2; margin: 0 0 12px; }
-    .hero p { margin: 0 0 14px; color: rgba(255,255,255,.92); }
-    .tag {
-      display: inline-block;
-      padding: 6px 12px;
-      border: 1px solid rgba(255,255,255,.3);
-      border-radius: 999px;
-      font-size: 13px;
-      margin-right: 8px;
-      margin-bottom: 8px;
-      background: rgba(255,255,255,.08);
-    }
-    .hero img, .shot img, .gallery img {
-      width: 100%;
-      display: block;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.18);
-      box-shadow: 0 18px 50px rgba(0,0,0,.18);
-    }
-    .panel, .section {
-      background: var(--card);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      padding: 28px;
-      margin-bottom: 24px;
-      border: 1px solid rgba(15,23,42,.04);
-    }
-    .panel h2, .section h2 { margin-top: 0; font-size: 28px; }
-    .lead { color: var(--sub); }
-    .flow {
-      display: grid;
-      grid-template-columns: repeat(7,1fr);
-      gap: 10px;
-      margin-top: 18px;
-    }
-    .flow div {
-      background: linear-gradient(180deg,#f7f9ff,#eef2ff);
-      border: 1px solid #dde5ff;
-      border-radius: 16px;
-      padding: 14px 10px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 700;
-      color: #304468;
-    }
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .index {
-      min-width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg,#ecf0ff,#e2e7ff);
-      color: var(--brand);
-      font-weight: 800;
-      font-size: 20px;
-    }
-    .subtitle { color: var(--sub); margin: 0; }
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 24px;
-      align-items: start;
-    }
-    .steps {
-      margin: 0;
-      padding-left: 22px;
-    }
-    .steps li { margin-bottom: 12px; }
-    .note {
-      margin-top: 14px;
-      background: #f7f9fc;
-      border-left: 4px solid var(--brand);
-      padding: 12px 14px;
-      border-radius: 10px;
-      color: #475569;
-      font-size: 14px;
-    }
-    .feature-list {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: 12px;
-      margin-top: 18px;
-    }
-    .feature-list div {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
-      background: #fcfdff;
-    }
-    .feature-list strong { display: block; margin-bottom: 6px; }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap: 16px;
-      margin-top: 18px;
-    }
-    .small { font-size: 13px; color: var(--sub); }
-    .footer {
-      text-align: center;
-      color: var(--sub);
-      padding: 16px 0 28px;
-      font-size: 14px;
-    }
-    @media (max-width: 1100px) {
-      .layout, .hero-grid, .content-grid { grid-template-columns: 1fr; }
-      .sidebar { position: relative; top: 0; }
-      .flow { grid-template-columns: repeat(2,1fr); }
-    }
-    @media (max-width: 720px) {
-      .layout { padding: 14px; }
-      .hero { padding: 22px; }
-      .panel, .section { padding: 20px; }
-      .hero h1 { font-size: 30px; }
-      .feature-list, .gallery { grid-template-columns: 1fr; }
-      .flow { grid-template-columns: 1fr; }
-    }
-  </style>
+  }
+  :root[data-theme="dark"]{
+    --paper:#0b1118; --surface:#121a24; --surface-2:#182231; --code:#0e161f;
+    --ink:#e8eef6; --mute:#93a3b8; --wire:#2a3646; --wire-soft:#1e2937;
+    --go:#3ddc8a; --go-ink:#8ff0bd; --go-wash:#10301f;
+    --vio:#a698ff; --vio-wash:#221d44; --hot:#ff8064; --hot-wash:#3a1b16;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.55;
+    font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  h1,h2{font-family:"Space Grotesk","IBM Plex Sans",sans-serif;font-weight:600;letter-spacing:-.015em;margin:0}
+  p{margin:0}
+  :focus-visible{outline:3px solid var(--vio);outline-offset:3px;border-radius:6px}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:26px 22px 60px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:30px;align-items:start}
+  .rail{position:sticky;top:18px}
+  .rail-name{font-family:"Space Grotesk",sans-serif;font-size:15px;font-weight:600}
+  .rail-sub{color:var(--mute);font-size:12.5px;margin:4px 0 14px}
+  .toc{border-top:1px solid var(--wire)}
+  .toc a{display:grid;grid-template-columns:20px 1fr;gap:9px;text-decoration:none;color:var(--ink);
+    font-size:13.5px;padding:8px 6px;border-bottom:1px solid var(--wire-soft)}
+  .toc a:hover{background:var(--surface);color:var(--go-ink)}
+  .toc .n{font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:11.5px;color:var(--mute)}
+
+  .hero{background:var(--surface);border:1px solid var(--wire);border-radius:var(--rad);padding:30px;margin-bottom:20px}
+  .hero h1{font-size:clamp(25px,3.6vw,38px);line-height:1.12;max-width:20ch;font-weight:700}
+  .hero .sub{margin-top:12px;color:var(--mute);font-size:14.5px;max-width:56ch}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:22px;border-top:1px solid var(--wire)}
+  .stat{padding:14px 14px 0 0;border-right:1px solid var(--wire-soft)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font-family:"Space Grotesk",sans-serif;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+  .stat span{display:block;font-size:12px;color:var(--mute);margin-top:3px;line-height:1.35}
+
+  .card,.proj{background:var(--surface);border:1px solid var(--wire);border-radius:var(--rad);padding:24px;margin-bottom:20px;scroll-margin-top:18px}
+  .card h2{font-size:21px;margin-bottom:4px}
+
+  .phead{display:grid;grid-template-columns:44px 1fr;gap:13px;align-items:start;padding-bottom:14px;border-bottom:1px solid var(--wire)}
+  .pnum{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:var(--surface-2);
+    border:1px solid var(--wire);font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:17px;color:var(--go-ink)}
+  .phead h2{font-size:22px;line-height:1.2}
+  .meta{margin-top:4px;font-size:12.5px;color:var(--mute)}
+  .meta em{font-style:normal;color:var(--ink)}
+  .body{padding-top:16px}
+
+  .lbl{font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:10.5px;color:var(--mute);margin:20px 0 8px;display:flex;align-items:center;gap:8px}
+  .lbl::after{content:"";flex:1;height:1px;background:var(--wire-soft)}
+  .lbl:first-child{margin-top:0}
+
+  /* STAR */
+  .star{border:1px solid var(--wire);border-radius:11px;overflow:hidden}
+  .star > div{display:grid;grid-template-columns:8px 1fr;gap:13px;padding:10px 14px;
+    border-bottom:1px solid var(--wire-soft);font-size:14px}
+  .star > div::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--wire);margin-top:9px}
+  .star > div:last-child{border-bottom:0}
+  .star .res{background:var(--go-wash)}
+  .star .res::before{background:var(--go)}
+  .star .res span{color:var(--go-ink);font-weight:500}
+
+  /* ladder */
+  .ladder{display:grid;gap:0}
+  .rung{display:grid;grid-template-columns:186px 1fr;gap:14px;border:1px solid var(--wire);border-radius:10px;
+    padding:9px 12px;background:var(--surface-2)}
+  .rung .tech{font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:12px;font-weight:600;color:var(--go-ink);line-height:1.4}
+  .rung .q{font-size:13.5px;color:var(--ink)}
+  .rung .ex{display:block;font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:11px;color:var(--mute);margin-top:3px;line-height:1.45}
+  .rung.v .tech{color:var(--vio)}
+  .rung.h{border-style:dashed}
+  .rung.h .tech{color:var(--hot)}
+  .drop{height:15px;display:grid;place-items:center;color:var(--wire);font-size:13px;line-height:1}
+  .drop::before{content:"↓";color:var(--mute)}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .skills{display:flex;flex-wrap:wrap;gap:6px}
+  .skills span{font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:11.5px;border:1px solid var(--wire);
+    background:var(--surface-2);color:var(--mute);padding:3px 8px;border-radius:6px}
+  .skills span.on{border-color:color-mix(in srgb,var(--go) 45%,transparent);background:var(--go-wash);color:var(--go-ink)}
+
+  figure{margin:0}
+  figcaption{font-size:11.5px;color:var(--mute);margin-top:6px}
+  .scroll-x{overflow-x:auto;padding-bottom:4px}
+  svg.dia{display:block;width:100%;height:auto;min-width:560px}
+
+  .codehead{font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:11.5px;color:var(--mute);
+    border:1px solid var(--wire);border-bottom:0;border-radius:9px 9px 0 0;padding:7px 12px;background:var(--surface-2)}
+  pre{margin:0;background:var(--code);border:1px solid var(--wire);border-radius:0 0 9px 9px;padding:13px;
+    overflow-x:auto;font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:12.1px;line-height:1.6;color:var(--ink)}
+  pre .c{color:var(--mute)} pre .k{color:var(--vio);font-weight:500}
+  pre .s{color:var(--go-ink)} pre .r{color:var(--hot)}
+
+  .funnel{display:grid;gap:5px}
+  .fstage{display:grid;grid-template-columns:1fr 128px;gap:10px;align-items:center}
+  .fbar{height:32px;border-radius:7px;background:var(--go-wash);border:1px solid color-mix(in srgb,var(--go) 35%,transparent);
+    display:flex;align-items:center;padding:0 11px;font-size:12.5px;font-family:"Space Grotesk",sans-serif;font-weight:600;
+    color:var(--go-ink);white-space:nowrap;overflow:hidden}
+  .fbar.v{background:var(--vio-wash);border-color:color-mix(in srgb,var(--vio) 40%,transparent);color:var(--vio)}
+  .fnote{font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:10.5px;color:var(--mute);text-align:right}
+  .slot{border-bottom:1px dashed var(--mute);padding:0 6px}
+
+  .map{width:100%;border-collapse:collapse;font-size:13.5px}
+  .map th,.map td{text-align:left;vertical-align:top;padding:8px 12px 8px 0;border-bottom:1px solid var(--wire-soft)}
+  .map th{font-size:11.5px;color:var(--mute);font-family:"Space Grotesk",sans-serif;border-bottom:1px solid var(--wire)}
+  .map tr:last-child td{border-bottom:0}
+  .pin{font-family:"IBM Plex Mono","PingFang SC","Microsoft YaHei",monospace;font-size:11px;color:var(--go-ink);background:var(--go-wash);
+    padding:2px 6px;border-radius:5px;display:inline-block;margin:2px 4px 2px 0;white-space:nowrap}
+
+  .foot{color:var(--mute);font-size:12px;text-align:center;padding-top:4px}
+
+  @media (max-width:1040px){
+    .wrap{grid-template-columns:1fr;gap:18px;padding:16px 14px 44px}
+    .rail{position:static;background:var(--surface);border:1px solid var(--wire);border-radius:var(--rad);padding:16px}
+    .cols{grid-template-columns:1fr}
+    .stats{grid-template-columns:repeat(2,1fr)} .stat{border-right:0}
+  }
+  @media (max-width:560px){
+    .hero,.card,.proj{padding:17px}
+    .rung{grid-template-columns:1fr;gap:2px}
+    .star > div{grid-template-columns:8px 1fr;gap:10px;font-size:13.5px}
+    .fstage{grid-template-columns:1fr 84px}
+    .phead{grid-template-columns:36px 1fr} .pnum{width:36px;height:36px;font-size:15px}
+  }
+  @media print{.rail{display:none}.wrap{grid-template-columns:1fr}.proj,.card{break-inside:avoid}}
+
+  .langsw{display:flex;gap:6px;margin:10px 0 2px}
+  .langsw button{font:inherit;font-size:12px;font-family:"IBM Plex Mono",monospace;cursor:pointer;
+    border:1px solid var(--wire);background:var(--surface-2);color:var(--mute);
+    padding:4px 11px;border-radius:999px;line-height:1.4}
+  .langsw button:hover{color:var(--ink)}
+  .langsw button[aria-pressed="true"]{background:var(--go-wash);border-color:var(--go);color:var(--go-ink);font-weight:600}
+  :lang(zh-CN) body,html[lang="zh-CN"] body{letter-spacing:.01em}
+  @media print{.langsw{display:none}}
+</style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="logo">WDO 项目系统演示手册</div>
-      <div class="desc">网页版说明文档｜按步骤理解系统功能与演示路径</div>
-      <nav class="toc">
-        <a href="#overview">项目概览</a>
-        <a href="#register">1. 会员注册</a>
-        <a href="#member">2. 会员信息管理</a>
-        <a href="#apply">3. 参会报名</a>
-        <a href="#checkin">4. 电子签到</a>
-        <a href="#vote">5. 电子投票</a>
-        <a href="#qrcode">6. 二维码管理</a>
-        <a href="#website">7. 中英文官网</a>
-        <a href="#summary">总结</a>
-      </nav>
-      <div class="note">
-        本手册基于你提供的设计资源整理。当前设计包里，官网界面最完整；后台部分以框架页为主，所以后台模块采用“业务步骤 + 对应界面位置说明”的方式来帮助理解。
-      </div>
-    </aside>
+<div class="wrap">
+<aside class="rail">
+<div class="rail-name" data-zh="六个项目">Six projects</div>
+<div class="langsw"><button type="button" data-lang="en">EN</button><button type="button" data-lang="zh">中文</button></div>
+    <div class="rail-sub" data-zh="情境 · 技术栈 · 机制">STAR · stack · mechanism</div>
+<nav class="toc">
+<a href="#fit"><span class="n">00</span><span data-zh="能力索引">Skill index</span></a>
+<a href="#esim"><span class="n">01</span><span data-zh="eSIM 开通">eSIM activation</span></a>
+<a href="#wdo"><span class="n">02</span><span data-zh="申请 · 审核 · 投票">Apply · audit · vote</span></a>
+<a href="#flash"><span class="n">03</span><span data-zh="限时抢购">Timed discount rush</span></a>
+<a href="#data"><span class="n">04</span><span data-zh="用户行为埋点">Behaviour tracking</span></a>
+<a href="#migration"><span class="n">05</span><span data-zh="订单系统迁移">Order migration</span></a>
+<a href="#learning"><span class="n">06</span><span data-zh="学习培训渠道">Learning channel</span></a>
+</nav>
+</aside>
+<main>
+<section class="hero">
 
-    <main class="main">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <div class="tag">图文手册</div>
-            <div class="tag">演示顺序版</div>
-            <div class="tag">适合培训/汇报</div>
-            <h1>WDO 项目系统<br>图文演示手册</h1>
-            <p>这是一份更接近 Markdown 文档体验的网页说明书。你可以直接滚动阅读，按系统演示顺序理解整体业务：从会员注册，到报名参会、现场签到、电子投票，再到二维码管理与中英文官网展示。</p>
-            <p>适用场景：需求沟通、系统培训、内部讲解、客户演示、交付文档。</p>
-          </div>
-          <div>
-            <img src="wdo_extracted/Desktop - 4.png" alt="WDO官网设计图" />
-          </div>
-        </div>
-      </section>
+<div class="stats">
+<div class="stat"><b>6M+</b><span data-zh="单日服务用户数，单场活动">users in one day, one campaign</span></div>
+<div class="stat"><b>4M+</b><span data-zh="签到渠道累计用户数">cumulative sign-in users</span></div>
+<div class="stat"><b data-zh="首个">1st</b><span data-zh="全国首个 Apple iOS eSIM 上线">nationwide Apple iOS eSIM rollout</span></div>
+<div class="stat"><b>2</b><span data-zh="双语，现场理事会投票">languages, live council voting</span></div>
+</div>
+</section>
+<section class="card" id="fit">
+<h2 data-zh="能力索引">Skill index</h2>
+<table class="map">
+<thead><tr><th data-zh="岗位要求的能力" style="width:40%">Skill the role asks for</th><th data-zh="对应项目">Shown in</th></tr></thead>
+<tbody>
+<tr><td data-zh="转化与商业化路径">Conversion and monetization journeys</td><td><span class="pin">01</span><span class="pin">03</span></td></tr>
+<tr><td data-zh="实验设计与漏斗分析">Experimentation and funnel analysis</td><td><span class="pin">04</span><span class="pin">03</span></td></tr>
+<tr><td data-zh="简洁的首次使用体验">Simple first-run experiences</td><td><span class="pin">02</span><span class="pin">06</span></td></tr>
+<tr><td data-zh="跨职能端到端交付">Cross-functional end-to-end delivery</td><td><span class="pin">01</span><span class="pin">05</span></td></tr>
+<tr><td data-zh="优先级与风险排序">Prioritising and sequencing risk</td><td><span class="pin">05</span><span class="pin">06</span></td></tr>
+<tr><td data-zh="留存闭环与习惯机制">Retention loops and habit mechanics</td><td><span class="pin">03</span><span class="pin">06</span></td></tr>
+</tbody>
+</table>
+</section>
+<!-- 01 -->
+<section class="proj" id="esim">
+<div class="phead">
+<div class="pnum">01</div>
+<div><h2 data-zh="eSIM：点一下套餐，号码即刻可用">eSIM: tap an offer, get a live line</h2>
+<div class="meta"><em data-zh="中国联通">China Unicom</em><span data-zh="· 产品本地化与生态交付 · 全国首个 Apple iOS eSIM 规模上线"> · product localisation &amp; ecosystem delivery · first-of-its-kind nationwide Apple iOS eSIM rollout</span></div></div>
+</div>
+<div class="body">
+<div class="star">
+<div><span data-zh="办一张号码曾经意味着跑一趟营业厅。eSIM 把购买搬到了手机上——最后一步由 Apple 和华为掌控，退款却由我们承担。">Buying a line meant a store visit. eSIM moves the purchase onto the device — where Apple and Huawei own the final step and we own the refund.</span></div>
+<div><span data-zh="我的角色：这条链路的产品负责人。把业务需求翻译成系统流程，让四方对齐到同一个上线节点。">My role: product owner of the journey. Turn business requirements into system flows, get four parties to one launch gate.</span></div>
+<div><span data-zh="定义订单状态机，为每一次系统交接设计可恢复路径；开通接口做成幂等，重试不会多开一张 SIM；上线前把每个失败码映射到客服话术。">Specified the order state machine with a resume path at each hand-off; made provisioning idempotent so a retry can never mint a second SIM; mapped every failure code to a care script before launch.</span></div>
+<div class="res"><span data-zh="全国在线 eSIM 上线，其中 iOS 链路为市场首例。">Nationwide online eSIM live, including the first iOS rollout of its kind in the market.</span></div>
+</div>
+<div class="lbl" data-zh="流程图 · 调用时序">shape · request sequence</div>
+<figure class="scroll-x">
+<svg aria-label="Sequence from user to order system, identity check, SM-DP plus and device" class="dia" role="img" viewbox="0 0 880 290">
+<defs><marker id="a1" markerheight="8" markerwidth="8" orient="auto" refx="7" refy="4"><path d="M0,0 L8,4 L0,8 z" fill="var(--mute)"></path></marker></defs>
+<g font-family="Space Grotesk, sans-serif" font-size="12" font-weight="600" text-anchor="middle">
+<rect fill="var(--go-wash)" height="30" rx="8" stroke="var(--go)" width="124" x="8" y="4"></rect><text data-zh="用户 · 客户端" fill="var(--go-ink)" x="70" y="23">User · app</text>
+<rect fill="var(--surface-2)" height="30" rx="8" stroke="var(--wire)" width="124" x="188" y="4"></rect><text data-zh="订单 · BSS" fill="var(--ink)" x="250" y="23">Order · BSS</text>
+<rect fill="var(--surface-2)" height="30" rx="8" stroke="var(--wire)" width="124" x="368" y="4"></rect><text data-zh="实名认证" fill="var(--ink)" x="430" y="23">Real-name KYC</text>
+<rect fill="var(--surface-2)" height="30" rx="8" stroke="var(--wire)" width="124" x="548" y="4"></rect><text fill="var(--ink)" x="610" y="23">SM-DP+</text>
+<rect fill="var(--vio-wash)" height="30" rx="8" stroke="var(--vio)" width="144" x="728" y="4"></rect><text data-zh="终端 · LPA" fill="var(--vio)" x="800" y="23">Device · LPA</text>
+</g>
+<g stroke="var(--wire)" stroke-dasharray="4 5" stroke-width="1.2">
+<line x1="70" x2="70" y1="34" y2="266"></line><line x1="250" x2="250" y1="34" y2="266"></line><line x1="430" x2="430" y1="34" y2="266"></line>
+<line x1="610" x2="610" y1="34" y2="266"></line><line x1="800" x2="800" y1="34" y2="266"></line>
+</g>
+<g marker-end="url(#a1)" stroke="var(--mute)" stroke-width="1.4">
+<line x1="70" x2="246" y1="64" y2="64"></line><line x1="250" x2="426" y1="96" y2="96"></line>
+<line x1="430" x2="254" y1="128" y2="128"></line><line x1="250" x2="606" y1="160" y2="160"></line>
+<line x1="610" x2="254" y1="192" y2="192"></line><line x1="250" x2="796" y1="224" y2="224"></line>
+<line x1="800" x2="614" y1="256" y2="256"></line>
+</g>
+<g fill="var(--ink)" font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle">
+<text data-zh="createOrder · 已校验机型与资格" x="158" y="58">createOrder · device + eligibility checked</text>
+<text x="340" y="90">verify(identity)</text>
+<text data-zh="通过 · 可重试 3 次，订单保持可恢复" x="340" y="122">ok · retry ≤ 3, order stays resumable</text>
+<text x="430" y="154">prepareProfile(key = orderId)</text>
+<text data-zh="激活码 + SM-DP+ 地址" x="430" y="186">activationCode + SM-DP+ address</text>
+<text data-zh="下发激活码 · 二维码兜底 · 超时重发" x="525" y="218">push code · QR fallback · resend on timeout</text>
+<text data-zh="下载配置文件 → 安装完成 → ACTIVE" x="707" y="250">downloadProfile → installed → ACTIVE</text>
+</g>
+</svg>
+<figcaption data-zh="流失集中在实名认证与配置文件下载两步，两者都可重试且不会重复扣费。">Loss concentrates at KYC and profile download; both retry without re-charging.</figcaption>
+</figure>
+<div class="cols">
+<div>
+<div class="lbl" data-zh="技术栈 · 每一层回答的问题">stack · what each layer answers</div>
+<div class="ladder">
+<div class="rung"><span class="tech" data-zh="H5 / 客户端下单页">H5 / app order page</span><span class="q"><span data-zh="“这台设备到底支不支持 eSIM？”">“Can this handset even do eSIM?”</span><span class="ex" data-zh="iPhone 14 · iOS 16.2 · 无锁 → 展示套餐；不支持的机型 → 隐藏入口">iPhone 14 · iOS 16.2 · unlocked → plan list; unsupported model → entry hidden</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="BSS 订单接口">BSS order API</span><span class="q"><span data-zh="“如何锁定号码和款项？”">“How do I hold a number and the money?”</span><span class="ex" data-zh="订单 88213 预占 MSISDN + ICCID 共 30 分钟">order 88213 reserves MSISDN + ICCID for 30 min</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="实名认证">Real-name KYC</span><span class="q"><span data-zh="“这个人真的是本人吗？”">“Is this really who they say?”</span><span class="ex" data-zh="身份证 + 活体检测 · 可重试 3 次 · 订单停留在 PAID，而不是 FAILED">ID + liveness · 3 retries · order stays PAID, not FAILED</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="Entitlement 权限服务">Entitlement server</span><span class="q"><span data-zh="“这台设备有资格开通这条号码吗？”">“Is this device allowed to activate this line?”</span><span class="ex" data-zh="iOS 在显示“激活 eSIM”之前会先问运营商">iOS asks the carrier before it shows “Activate eSIM”</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech">SM-DP+ (GSMA ES2+)</span><span class="q"><span data-zh="“配置文件本身从哪里来？”">“Where does the profile itself come from?”</span><span class="ex" data-zh="prepareProfile(key=88213) → 激活码，只生成一次">prepareProfile(key=88213) → activation code, once only</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech" data-zh="终端上的 LPA">LPA on device</span><span class="q"><span data-zh="“配置文件怎么装进手机？”">“How does the profile get onto the phone?”</span><span class="ex" data-zh="终端从 SM-DP+ 地址下载并安装，完成后回调">handset downloads from the SM-DP+ address, installs, notifies back</span></span></div>
+<div class="drop"></div>
+<div class="rung h"><span class="tech" data-zh="客服工作台">Care console</span><span class="q"><span data-zh="“下载失败的用户，我们该怎么答复？”">“What do we tell someone whose download failed?”</span><span class="ex" data-zh="E-DL-408 → 提供“重新下发”按钮，无需退款">E-DL-408 → “resend code” button, no refund needed</span></span></div>
+</div>
+</div>
+<div>
+<div class="lbl" data-zh="机制 · 幂等开通">mechanism · idempotent provisioning</div>
+<div class="codehead">order-state.ts</div>
+<pre><code><span class="c" data-zh="// 一张状态流转表 —— 产品、研发、客服看同一份">// one transition table — product, eng and care read the same thing</span>
+<span class="k">const</span> NEXT = {
+  CREATED:       { pay:<span class="s">'PAID'</span>,        expire:<span class="s">'CANCELLED'</span> },
+  PAID:          { kyc_ok:<span class="s">'VERIFIED'</span>,  kyc_fail:<span class="s">'REFUND'</span> },
+  VERIFIED:      { issued:<span class="s">'READY'</span>,     issue_err:<span class="s">'RETRY'</span> },
+  READY:         { installed:<span class="s">'ACTIVE'</span>, timeout:<span class="s">'RESEND_CODE'</span> },
+};
 
-      <section class="panel" id="overview">
-        <h2>项目概览</h2>
-        <p class="lead">WDO 项目系统面向会议与组织运营场景，覆盖会前、会中、会后的关键环节，既包含面向用户的官网与报名入口，也包含面向运营人员的后台管理能力。</p>
-        <div class="flow">
-          <div>会员注册</div>
-          <div>会员信息管理</div>
-          <div>参会报名</div>
-          <div>电子签到</div>
-          <div>电子投票</div>
-          <div>二维码管理</div>
-          <div>中英文官网</div>
-        </div>
-        <div class="feature-list">
-          <div><strong>统一会员体系</strong>围绕组织成员建立统一身份与资料档案，为报名、签到、投票等业务打通数据基础。</div>
-          <div><strong>会议活动数字化</strong>将参会报名、现场签到、会中互动等关键流程线上化，减少人工统计和现场排队。</div>
-          <div><strong>二维码贯穿全流程</strong>可作为报名凭证、签到凭证和身份识别凭证，提高核验效率。</div>
-          <div><strong>官网国际化展示</strong>通过中英文官网进行项目介绍、活动展示与对外传播，提升组织形象。</div>
-        </div>
-      </section>
+<span class="c" data-zh="// 相同 key ⇒ 相同配置文件：重试永远不会多开一张 SIM">// same key ⇒ same profile: a retry can never mint a second SIM</span>
+<span class="k">await</span> smdp.prepareProfile({ idempotencyKey: order.id,
+                            eid: device.eid, iccid: held.iccid });
 
-      <section class="section" id="register">
-        <div class="section-head">
-          <div>
-            <h2><span class="index">1</span> 会员注册</h2>
-            <p class="subtitle">建立统一账户，是用户进入系统的第一步。</p>
-          </div>
-        </div>
-        <div class="content-grid">
-          <div>
-            <ol class="steps">
-              <li>用户进入官网或活动入口页，点击“注册”或“申请加入组织”。</li>
-              <li>填写基础资料，如姓名、单位、联系方式、身份属性等信息。</li>
-              <li>提交后，系统生成会员账户或待审核记录，作为后续报名和签到的身份基础。</li>
-              <li>注册成功后，用户可继续完善资料，进入会员信息管理流程。</li>
-            </ol>
-            <div class="note">演示时可以强调：注册不是孤立功能，而是后续所有业务的入口。只有建立统一身份，系统才能把报名、签到、投票等行为串起来。</div>
-            <div class="feature-list">
-              <div><strong>标准化采集</strong>线上统一采集会员基础信息，减少线下登记误差。</div>
-              <div><strong>降低重复录入</strong>后续参会报名可复用已注册信息，提升填写效率。</div>
-            </div>
-          </div>
-          <div class="shot">
-            <img src="wdo_extracted/APP端主k.png" alt="活动视觉入口" />
-            <div class="small">可作为注册/活动入口视觉展示图，用于说明用户首先从前台入口进入系统。</div>
-          </div>
-        </div>
-      </section>
+<span class="k">on</span>(<span class="s">'issue_err'</span>, e =&gt; emit(<span class="s">'esim_fail'</span>, { code: e.code, step: <span class="r">'provision'</span> }));</code></pre>
+<div class="lbl" data-zh="体现的能力">skills demonstrated</div>
+<div class="skills"><span class="on" data-zh="需求 → 系统流程">requirements → system flows</span><span class="on" data-zh="跨组织推动">cross-org influence</span><span data-zh="状态机设计">state machine design</span><span data-zh="异常路径设计">failure-path design</span><span data-zh="灰度上线">staged rollout</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 02 -->
+<section class="proj" id="wdo">
+<div class="phead">
+<div class="pnum">02</div>
+<div><h2 data-zh="门户：申请、审核、参与">Portal: apply, get audited, take part</h2></div>
+</div>
+<div class="body">
+<div class="star">
+<div><span data-zh="一次成立大会：双语代表、不可改期的日程，理事会决议要建立在投票结果之上。">A founding conference with bilingual delegates, a fixed date, and council decisions that had to rest on the voting result.</span></div>
+<div><span data-zh="我的角色：负责签到与投票能力的需求分析与流程设计。">My role: requirements analysis and workflow design for the selected check-in and voting capabilities.</span></div>
+<div><span data-zh="议案开启瞬间冻结投票名册；把“一人一票”做成数据库约束而不是前端规则；把“需要补充材料”变成具体字段，并给出回到表单的路径。">Froze the eligibility roll at motion open, made one-member-one-vote a database constraint rather than a UI rule, and turned “needs more info” into a named field plus a route back into the form.</span></div>
+<div class="res"><span data-zh="投票系统在会员大会与理事会现场上线，支撑当天的决策流程。">Voting deployed live for member and council meetings, supporting decision-making on the day.</span></div>
+</div>
+<div class="lbl" data-zh="流程图 · 申请状态 → 会员活动">shape · application states → member activity</div>
+<figure class="scroll-x">
+<svg aria-label="Application state machine leading to member account with agenda, check-in, voting and record" class="dia" role="img" viewbox="0 0 880 240">
+<defs><marker id="a2" markerheight="8" markerwidth="8" orient="auto" refx="7" refy="4"><path d="M0,0 L8,4 L0,8 z" fill="var(--mute)"></path></marker></defs>
+<g fill="none" marker-end="url(#a2)" stroke="var(--mute)" stroke-width="1.3">
+<line x1="112" x2="148" y1="44" y2="44"></line><line x1="252" x2="288" y1="44" y2="44"></line><line x1="392" x2="428" y1="44" y2="44"></line>
+<path d="M348,64 L348,100 L180,100 L180,64"></path><line x1="534" x2="534" y1="62" y2="126"></line>
+<line x1="596" x2="634" y1="154" y2="154"></line><line x1="738" x2="776" y1="154" y2="154"></line>
+</g>
+<g font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" text-anchor="middle">
+<rect fill="var(--surface-2)" height="36" rx="9" stroke="var(--wire)" width="108" x="4" y="26"></rect><text data-zh="草稿" fill="var(--ink)" x="58" y="49">Draft</text>
+<rect fill="var(--surface-2)" height="36" rx="9" stroke="var(--wire)" width="104" x="148" y="26"></rect><text data-zh="已提交" fill="var(--ink)" x="200" y="49">Submitted</text>
+<rect fill="var(--vio-wash)" height="36" rx="9" stroke="var(--vio)" width="104" x="288" y="26"></rect><text data-zh="审核中" fill="var(--vio)" x="340" y="49">In review</text>
+<rect fill="var(--go-wash)" height="36" rx="9" stroke="var(--go)" width="212" x="428" y="26"></rect><text data-zh="审核通过 → 会员账号" fill="var(--go-ink)" x="534" y="49">Approved → member account</text>
+<rect fill="var(--hot-wash)" height="34" rx="9" stroke="var(--hot)" stroke-dasharray="4 4" width="252" x="124" y="82"></rect>
+<text data-zh="需补充 · 返回具体字段与原因" fill="var(--hot)" font-size="12" x="250" y="104">Needs info · field + reason returned</text>
+<rect fill="var(--surface-2)" height="36" rx="9" stroke="var(--wire)" width="140" x="456" y="136"></rect><text data-zh="议程 · 报名" fill="var(--ink)" x="526" y="159">Agenda · register</text>
+<rect fill="var(--surface-2)" height="36" rx="9" stroke="var(--wire)" width="104" x="634" y="136"></rect><text data-zh="扫码签到" fill="var(--ink)" x="686" y="159">QR check-in</text>
+<rect fill="var(--surface-2)" height="36" rx="9" stroke="var(--wire)" width="96" x="776" y="136"></rect><text data-zh="投票" fill="var(--ink)" x="824" y="159">Vote</text>
+<rect fill="var(--surface-2)" height="32" rx="9" stroke="var(--wire-soft)" width="416" x="456" y="190"></rect>
+<text data-zh="我的记录 · 已参加、已投票、待办事项" fill="var(--mute)" font-size="12" font-weight="500" x="664" y="211">My record · attended, ballots cast, outstanding actions</text>
+</g>
+</svg>
+</figure>
+<div class="cols">
+<div>
+<div class="lbl" data-zh="技术栈 · 每一层回答的问题">stack · what each layer answers</div>
+<div class="ladder">
+<div class="rung"><span class="tech" data-zh="双语表单（i18n）">Bilingual form (i18n)</span><span class="q"><span data-zh="“代表用任一语言都能填完吗？”">“Can a delegate finish this in either language?”</span><span class="ex" data-zh="一套内容模型，而不是英文界面外挂一层翻译">one content model, not English labels with a translation bolted on</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="自动校验规则">Auto-check rules</span><span class="q"><span data-zh="“哪些能在人工看之前就拦下？”">“What can we reject before a human reads it?”</span><span class="ex" data-zh="机构重复 · 缺少资质文件 · 格式不符">duplicate organisation · missing accreditation file · bad format</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="审核队列">Review queue</span><span class="q"><span data-zh="“谁来决定，依据是什么？”">“Who decides, and on what evidence?”</span><span class="ex" data-zh="每位审核人看到同一份材料 · 退回必须填写原因">same record for every reviewer · reason mandatory on return</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="带签名的二维码凭证">Signed QR credential</span><span class="q"><span data-zh="“入场时如何识别身份？”">“How is a person identified at the door?”</span><span class="ex" data-zh="会员 ID + 议案投票资格，手机没电可补发">member id + motion eligibility, re-issued if the phone dies</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="签到扫码端">Check-in scanner</span><span class="q"><span data-zh="“到场如何实时变成数据？”">“How does attendance become data instantly?”</span><span class="ex" data-zh="扫码即回写，主办方能看到会场坐满的过程">scan writes back live; organisers see the room fill</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech" data-zh="投票服务">Ballot service</span><span class="q"><span data-zh="“如何保证一人一票？”">“How is one member, one vote guaranteed?”</span><span class="ex" data-zh="一次性令牌 + 唯一索引 · 重复提交返回同一张回执">single-use token + unique index · replay returns the same receipt</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech" data-zh="实时计票大屏">Live tally board</span><span class="q"><span data-zh="“会场看到什么，什么时候看到？”">“What does the room see, and when?”</span><span class="ex" data-zh="议案关闭后数秒，结果投到大屏">result on the projector seconds after the motion closes</span></span></div>
+</div>
+</div>
+<div>
+<div class="lbl" data-zh="机制 · 经得起复核的投票">mechanism · a vote that survives scrutiny</div>
+<div class="codehead">ballot.sql</div>
+<pre><code><span class="c" data-zh="-- 主席开启议案的瞬间冻结名册">-- roll frozen the second the chair opens the motion</span>
+<span class="k">INSERT INTO</span> ballot_roll (motion_id, member_id, token)
+<span class="k">SELECT</span> :motion, m.id, gen_random_uuid()
+<span class="k">FROM</span> members m
+<span class="k">WHERE</span> m.status = <span class="s">'APPROVED'</span> <span class="k">AND</span> m.approved_at &lt; :opened_at;
 
-      <section class="section" id="member">
-        <div class="section-head">
-          <div>
-            <h2><span class="index">2</span> 会员信息管理</h2>
-            <p class="subtitle">对会员档案进行维护、查询和更新，形成长期可用的数据资产。</p>
-          </div>
-        </div>
-        <div class="content-grid">
-          <div>
-            <ol class="steps">
-              <li>会员注册完成后，后台形成对应的会员档案。</li>
-              <li>管理人员可以查看会员基础信息，并进行补充、修正或审核。</li>
-              <li>会员资料可在后续活动报名、资格校验、消息通知中持续复用。</li>
-              <li>当会员信息发生变化时，系统支持统一更新，避免信息分散在多个表单中。</li>
-            </ol>
-            <div class="note">这一部分可重点突出“统一管理”和“数据沉淀”。对组织来说，会员信息管理不仅是维护资料，更是后续所有服务能力的基础。</div>
-          </div>
-          <div class="shot">
-            <img src="wdo_extracted/WDO管理后台.png" alt="后台管理框架页" />
-            <div class="small">设计包中的后台图以框架页为主，可用来讲解“管理端统一维护会员数据”的后台位置。</div>
-          </div>
-        </div>
-      </section>
+<span class="c" data-zh="-- 一人一票 —— 由数据库约束保证，而不是界面">-- one member, one vote — enforced by the database, not the UI</span>
+<span class="k">CREATE UNIQUE INDEX</span> ON votes (motion_id, member_id);
 
-      <section class="section" id="apply">
-        <div class="section-head">
-          <div>
-            <h2><span class="index">3</span> 参会报名</h2>
-            <p class="subtitle">将具体活动与会员身份绑定，完成会前报名组织。</p>
-          </div>
-        </div>
-        <div class="content-grid">
-          <div>
-            <ol class="steps">
-              <li>用户进入活动详情页，查看会议名称、时间、地点、议程或简介。</li>
-              <li>点击报名后，系统自动带出已注册的部分信息，减少重复填写。</li>
-              <li>根据会议要求补充参会信息，如出席类型、单位信息、联系方式等。</li>
-              <li>报名成功后，系统为后续签到和二维码核验准备对应记录。</li>
-            </ol>
-            <div class="note">讲解时可以突出：活动报名与会员体系打通后，用户体验会更好，主办方也更容易掌握报名规模和人员结构。</div>
-          </div>
-          <div class="shot">
-            <img src="wdo_crops/website_activity.png" alt="官网活动展示区域" />
-            <div class="small">官网中的“重要活动”区域，可作为参会报名入口和活动详情展示的前台示意。</div>
-          </div>
-        </div>
-      </section>
+<span class="c" data-zh="-- 令牌一次性作废；重复提交返回同一张回执">-- token burns on use; a replay returns the same receipt</span>
+<span class="k">UPDATE</span> ballot_roll <span class="k">SET</span> used_at = now()
+<span class="k">WHERE</span> token = :token <span class="k">AND</span> used_at <span class="k">IS NULL</span> <span class="k">RETURNING</span> member_id;
+<span class="c" data-zh="-- 0 行 ⇒">-- 0 rows ⇒ </span><span class="r" data-zh="已投过票">already voted</span><span class="c" data-zh="，显示为回执 —— 而不是报错">, shown as a receipt — never as an error</span></code></pre>
+<div class="lbl" data-zh="体现的能力">skills demonstrated</div>
+<div class="skills"><span class="on" data-zh="流程设计">workflow design</span><span class="on" data-zh="按固定节点交付">shipping to a fixed date</span><span data-zh="双语产品">bilingual product</span><span data-zh="可信与正确性">trust &amp; correctness</span><span data-zh="现场运营协同">on-site ops coordination</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 03 -->
+<section class="proj" id="flash">
+<div class="phead">
+<div class="pnum">03</div>
+<div><h2 data-zh="抢购：半价库存，只开一个瞬间">The rush: half-price stock, one open moment</h2>
+<div class="meta"><em data-zh="全国性数字化营销活动">National digital campaigns</em><span data-zh="· “充值五折”单日服务 600 万+ 用户 · 签到渠道累计 400 万+ 用户"> · “50% top-up” serving 6M+ users in one day · sign-in channel at 4M+ cumulative users</span></div></div>
+</div>
+<div class="body">
+<div class="star">
+<div><span data-zh="限量半价充值在固定时刻开抢。稀缺把需求压缩进我们可控的窗口，也把一年的流量压进九十秒。">A limited pool of half-price top-ups opens at a fixed second. Scarcity concentrates demand — and lands a year of traffic in ninety seconds.</span></div>
+<div><span data-zh="我的角色：活动机制设计，以及跨团队上线准备——投放节奏、容量规划、客服排班，全部对齐同一个倒计时。">My role: campaign mechanics plus cross-team launch readiness — marketing timing, capacity planning, care staffing, all against one countdown.</span></div>
+<div><span data-zh="定下 p99 一秒内必须给出明确结果；把领取收敛成一次原子 Redis 操作，杜绝超卖；用队列把数据库挡在洪峰之外；把“已抢完”做成有下一场时间和提醒开关的正式页面。">Set a p99 budget of one second for a definite answer; moved the claim into a single atomic Redis hop so stock can’t oversell; kept the database out of the spike behind a queue; made “sold out” a designed screen with the next drop time and a reminder toggle.</span></div>
+<div class="res"><span data-zh="单日服务 600 万+ 用户且平台稳定；配套的每日签到渠道累计达到 400 万+ 用户。">6M+ users served in a day with stability held; the linked daily sign-in channel reached 4M+ cumulative users.</span></div>
+</div>
+<div class="lbl" data-zh="流程图 · 到达流量与容量">shape · arrivals vs capacity</div>
+<figure class="scroll-x">
+<svg aria-label="Traffic spike at gate open against planned capacity" class="dia" role="img" viewbox="0 0 880 160">
+<g stroke="var(--wire)"><line x1="42" x2="856" y1="124" y2="124"></line><line x1="42" x2="42" y1="12" y2="124"></line></g>
+<line stroke="var(--vio)" stroke-dasharray="6 5" stroke-width="1.3" x1="42" x2="856" y1="52" y2="52"></line>
+<text data-zh="规划容量" fill="var(--vio)" font-family="IBM Plex Mono, monospace" font-size="10.5" text-anchor="end" x="856" y="46">capacity planned</text>
+<path d="M42,120 L300,116 L400,110 L438,104 L452,32 L462,20 L480,44 L512,78 L580,100 L680,112 L780,118 L856,120" fill="none" stroke="var(--hot)" stroke-width="2.4"></path>
+<path d="M42,120 L300,116 L400,110 L438,104 L452,32 L462,20 L480,44 L512,78 L580,100 L680,112 L780,118 L856,120 L856,124 L42,124 Z" fill="var(--hot)" opacity=".1"></path>
+<g fill="var(--mute)" font-family="IBM Plex Mono, monospace" font-size="10.5">
+<text data-zh="T−1天 推送" x="46" y="140">T−1d push</text><text data-zh="T−0 开闸" x="404" y="140">T−0 gate</text><text data-zh="库存售罄" x="556" y="140">stock out</text><text data-zh="请求/秒" x="6" y="18">req/s</text>
+</g>
+</svg>
+</figure>
+<div class="lbl" data-zh="流程图 · 到达数据库之前，每一层拦掉了什么">shape · what each layer removes before the database</div>
+<div class="funnel">
+<div class="fstage"><div class="fbar" data-zh="T−0 到达流量" style="width:100%">Arrivals at T−0</div><div class="fnote" data-zh="提醒分批下发">opt-ins staggered</div></div>
+<div class="fstage"><div class="fbar" data-zh="CDN 承接等待页" style="width:88%">CDN serves the lobby</div><div class="fnote" data-zh="0 次后端调用">0 backend calls</div></div>
+<div class="fstage"><div class="fbar" data-zh="队列发放令牌" style="width:64%">Queue issues a token</div><div class="fnote" data-zh="限流 · 有效期 30 秒">rate-limited · TTL 30s</div></div>
+<div class="fstage"><div class="fbar v" data-zh="原子领取" style="width:42%">Atomic claim</div><div class="fnote" data-zh="1 次 Redis 往返">1 Redis round trip</div></div>
+<div class="fstage"><div class="fbar v" data-zh="订单异步落库" style="width:30%">Order written async</div><div class="fnote" data-zh="数据库不进洪峰">DB never in the spike</div></div>
+<div class="fstage"><div class="fbar v" data-zh="在锁定期内支付" style="width:20%">Paid in hold window</div><div class="fnote" data-zh="未支付 → 释放回库存">unpaid → back to pool</div></div>
+</div>
+<div class="cols">
+<div>
+<div class="lbl" data-zh="技术栈 · 每一层回答的问题">stack · what each layer answers</div>
+<div class="ladder">
+<div class="rung"><span class="tech" data-zh="CDN 静态等待页">CDN static lobby</span><span class="q"><span data-zh="“几百万人同时看倒计时，如何几乎零成本？”">“How do millions read a countdown for free?”</span><span class="ex" data-zh="边缘节点预生成 HTML · T−0 之前后端零压力">prebuilt HTML at the edge · backend untouched until T−0</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="服务端校时">Server-synced clock</span><span class="q"><span data-zh="“如何让所有人看到同一个 T−0？”">“How does everyone see the same T−0?”</span><span class="ex" data-zh="以服务端时间校正客户端偏差，不信任设备时间">client offset corrected against server time, not device time</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="令牌桶准入">Token-bucket gate</span><span class="q"><span data-zh="“如何只放进后端扛得住的流量？”">“How do I admit only what the backend can take?”</span><span class="ex" data-zh="约 40 万 rps 到达，放行 2 万 rps，其余排队或提示“下一场”">~400k rps arriving, 20k rps admitted, rest queued or told “next drop”</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech">Redis + Lua</span><span class="q"><span data-zh="“如何领取库存又不超卖？”">“How do I claim stock without overselling?”</span><span class="ex" data-zh="校验用户与扣减库存在一个原子脚本里完成，无需加锁">check-user + decrement in one atomic script, no lock</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech">Kafka / MQ</span><span class="q"><span data-zh="“如何让数据库避开洪峰？”">“How do I keep the DB out of the spike?”</span><span class="ex" data-zh="领取结果先入队，随后以稳定速率写订单">claims queued, orders written at a steady rate afterwards</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="支付与库存锁定">Payment + hold TTL</span><span class="q"><span data-zh="“抢到却没付款怎么办？”">“What happens to a claim nobody pays for?”</span><span class="ex" data-zh="锁定 15 分钟到期释放，库存回到下一场">15-min hold expires, stock returns to the pool for the next drop</span></span></div>
+<div class="drop"></div>
+<div class="rung h"><span class="tech" data-zh="降级开关">Degrade switch</span><span class="q"><span data-zh="“系统被打满时用户看到什么？”">“What do people see when we are saturated?”</span><span class="ex" data-zh="下一场提示 + 提醒我 —— 绝不是转圈">next-drop screen + remind-me — never a spinner</span></span></div>
+</div>
+</div>
+<div>
+<div class="lbl" data-zh="机制 · 不超卖、不重复领取">mechanism · no oversell, no double claim</div>
+<div class="codehead" data-zh="claim.lua —— 一次原子操作，三种结果，三个页面">claim.lua — one atomic hop, three outcomes, three screens</div>
+<pre><code><span class="c" data-zh="-- KEYS[1] 库存 · KEYS[2] 已领用户集合 · ARGV[1] 用户 ID">-- KEYS[1] stock · KEYS[2] claimed-user set · ARGV[1] uid</span>
+<span class="k">if</span> redis.call(<span class="s">'SISMEMBER'</span>, KEYS[2], ARGV[1]) == 1 <span class="k">then</span>
+  <span class="k">return</span> <span class="r">-1</span>                    <span class="c" data-zh="-- 已领取 → 直接展示已有的优惠码">-- already claimed → show their code</span>
+<span class="k">end</span>
+<span class="k">local</span> left = tonumber(redis.call(<span class="s">'GET'</span>, KEYS[1]))
+<span class="k">if</span> <span class="k">not</span> left <span class="k">or</span> left &lt;= 0 <span class="k">then</span>
+  <span class="k">return</span> <span class="r">0</span>                     <span class="c" data-zh="-- 已售罄 → 下一场时间 + 提醒我">-- sold out → next-drop + remind me</span>
+<span class="k">end</span>
+redis.call(<span class="s">'DECR'</span>, KEYS[1]); redis.call(<span class="s">'SADD'</span>, KEYS[2], ARGV[1])
+<span class="k">return</span> left - 1            <span class="c" data-zh="-- 领取成功 → 订单异步入队">-- claimed → order queued async</span></code></pre>
+<div class="lbl" data-zh="体现的能力">skills demonstrated</div>
+<div class="skills"><span class="on" data-zh="促销机制设计">promo mechanics</span><span class="on" data-zh="高并发上线准备">high-concurrency readiness</span><span data-zh="容量规划">capacity planning</span><span data-zh="异常状态体验">failure-state UX</span><span data-zh="留存闭环设计">retention loop design</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 04 -->
+<section class="proj" id="data">
+<div class="phead">
+<div class="pnum">04</div>
+<div><h2 data-zh="行为埋点：找到真正漏水的那一环">Behaviour tracking: find the stage that leaks</h2>
+<div class="meta"><em data-zh="数据驱动优化">Data-driven optimisation</em><span data-zh="· 把用户行为与活动表现的分析，转成产品、运营与下一轮迭代的决策"> · behaviour and campaign analysis turned into product, operational and iteration decisions</span></div></div>
+</div>
+<div class="body">
+<div class="star">
+<div><span data-zh="活动结束后只有一个总数，和好几种说法。总数无法回答：用户是压根没看到、实名失败，还是没抢到库存。">After a campaign there was a total and several theories. A total can’t say whether people never saw the offer, failed identity, or lost the race for stock.</span></div>
+<div><span data-zh="我的角色：定义度量本身——事件契约、漏斗环节，以及团队用来争论的切分维度。">My role: define the measurement — event contract, funnel stages, and the cuts the team argues with.</span></div>
+<div><span data-zh="Web 与 WebView 共用一份事件契约，每条数据都带实验分组，失败也作为带错误码的事件上报；下面这条链路把它从浏览器送到活动期间运营盯的看板。">One event contract across web and webview, variant on every payload, failures logged as coded events; the pipeline below carries it from the browser to a board the ops team watches during the drop.</span></div>
+<div class="res"><span data-zh="把流失定位到具体环节与人群，转化成产品流程、运营策略和下一轮迭代的建议。">Drop-off located by stage and segment, turned into recommendations for product flows, operational strategy and the next iteration.</span></div>
+</div>
+<div class="lbl" data-zh="技术栈 · 每一层回答的问题">stack · what each layer answers</div>
+<div class="ladder">
+<div class="rung"><span class="tech">Matomo</span><span class="q"><span data-zh="“浏览器里发生了什么？”">“What happened in the browser?”</span><span class="ex" data-zh="tap_claim 上报：variant=B，province=河南，device=Android 13">tap_claim fires with variant=B, province=Henan, device=Android 13</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech">Nginx</span><span class="q"><span data-zh="“如何高效接住大量 HTTP 请求？”">“How do I receive many HTTP requests efficiently?”</span><span class="ex" data-zh="上报接口扛住 T−0 洪峰，只负责写访问日志">the beacon endpoint absorbs the T−0 burst and just writes access logs</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech">Filebeat</span><span class="q"><span data-zh="“如何低成本地持续搬运不断增长的日志？”">“How do I cheaply ship continuously growing logs?”</span><span class="ex" data-zh="增量读取日志并记住位点，压力大时退避而不是丢行">tails the log, remembers its offset, backs off instead of dropping lines</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech">Logstash</span><span class="q"><span data-zh="“如何清洗和转换事件？”">“How do I transform events?”</span><span class="ex" data-zh="解析 JSON、过滤爬虫，把 error_code E-DL-408 映射到“配置文件下载”环节">parse JSON, drop bots, map error_code E-DL-408 → stage “profile download”</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech">Kafka</span><span class="q"><span data-zh="“如何缓冲并分发海量事件流？”">“How do I buffer and distribute huge event streams?”</span><span class="ex" data-zh="九十秒洪峰被吸收；计费、BI、告警各自按自己的速度消费">90-second burst absorbed; billing, BI and alerting each read at their own pace</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech">Elasticsearch</span><span class="q"><span data-zh="“如何检索和分析这么大的数据量？”">“How do I search and analyse all of it?”</span><span class="ex" data-zh="按 variant × 省份聚合 claim_result，计算 wait_ms 的 p95">aggregate claim_result by variant × province, p95 of wait_ms</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech">Kibana</span><span class="q"><span data-zh="“人怎么查看和探索这些数据？”">“How does a human explore and visualise it?”</span><span class="ex" data-zh="抢购期间的实时漏斗看板；第二天早上做复盘切分">live funnel board during the drop; post-mortem cuts the morning after</span></span></div>
+</div>
+<div class="cols">
+<div>
+<div class="lbl" data-zh="机制 · 事件契约">mechanism · event contract</div>
+<div class="codehead">campaign-track.js</div>
+<pre><code><span class="k">const</span> track = (event, props = {}) =&gt; navigator.sendBeacon(<span class="s">'/collect'</span>,
+  JSON.stringify({
+    event,                        <span class="c" data-zh="// 事件：view_offer · tap_claim · queue_enter">// view_offer · tap_claim · queue_enter</span>
+                                  <span class="c" data-zh="//       claim_result · pay_done">// claim_result · pay_done</span>
+    ts: Date.now(), sid: session(), uid: pseudonymousId(),
+    variant: bucket(<span class="s">'topup_lp'</span>), <span class="c" data-zh="// 服务端分配，每条事件都带上">// server-assigned, on every event</span>
+    ctx: { channel, province, device, os, net },
+    props                         <span class="c" data-zh="// 环节参数：error_code · wait_ms · stock_left">// error_code · wait_ms · stock_left</span>
+  }));
 
-      <section class="section" id="checkin">
-        <div class="section-head">
-          <div>
-            <h2><span class="index">4</span> 电子签到</h2>
-            <p class="subtitle">用电子凭证替代纸质签到，实现更快的现场核验。</p>
-          </div>
-        </div>
-        <div class="content-grid">
-          <div>
-            <ol class="steps">
-              <li>报名成功后，系统为参会人员生成电子签到凭证。</li>
-              <li>参会人员到场后，出示二维码或电子身份信息。</li>
-              <li>现场工作人员通过系统扫码或核验，快速确认到场状态。</li>
-              <li>签到数据实时回写后台，主办方可以即时查看到场情况。</li>
-            </ol>
-            <div class="note">这一部分适合强调两点：第一是提升入场效率，第二是签到数据可实时统计，为会务组织提供实时掌控能力。</div>
-          </div>
-          <div class="shot">
-            <img src="wdo_extracted/icon_头像.png" alt="电子身份图标" />
-            <div class="small">设计资源中的身份图标，可辅助说明电子签到依赖个人电子身份与凭证。</div>
-          </div>
-        </div>
-      </section>
+<span class="c" data-zh="// 正是这两行让流失变得可解释">// the two lines that made drop-off explainable</span>
+track(<span class="s">'queue_enter'</span>,  { wait_ms: 0 });
+track(<span class="s">'claim_result'</span>, { outcome: <span class="r">'sold_out'</span>, stock_left: 0 });</code></pre>
+<div class="codehead" data-zh="funnel-cut.json —— Elasticsearch">funnel-cut.json — Elasticsearch</div>
+<pre><code>{ <span class="s">"query"</span>: { <span class="s">"bool"</span>: { <span class="s">"filter"</span>: [
+      { <span class="s">"term"</span>: { <span class="s">"event"</span>: <span class="s">"claim_result"</span> } },
+      { <span class="s">"term"</span>: { <span class="s">"campaign"</span>: <span class="s">"topup50"</span> } } ] } },
+  <span class="s">"aggs"</span>: { <span class="s">"by_variant"</span>: { <span class="s">"terms"</span>: { <span class="s">"field"</span>: <span class="s">"variant"</span> },
+    <span class="s">"aggs"</span>: {
+      <span class="s">"outcome"</span>:  { <span class="s">"terms"</span>: { <span class="s">"field"</span>: <span class="s">"props.outcome"</span> } },
+      <span class="s">"wait_p95"</span>: { <span class="s">"percentiles"</span>: { <span class="s">"field"</span>: <span class="s">"props.wait_ms"</span> } } } } } }
+<span class="c" data-zh="// 平均值会盖住那个真正出问题的省份">// the average hides the one province that is actually broken</span></code></pre>
+</div>
+<div>
+<div class="lbl" data-zh="漏斗 · 已埋点的环节">funnel · stages tracked</div>
+<div class="funnel">
+<div class="fstage"><div class="fbar" data-zh="看到活动" style="width:100%">Saw the offer</div><div class="fnote" data-zh="基准">base</div></div>
+<div class="fstage"><div class="fbar" data-zh="打开页面" style="width:86%">Opened page</div><div class="fnote">−<span class="slot"> </span>%</div></div>
+<div class="fstage"><div class="fbar" data-zh="点击领取" style="width:69%">Tapped claim</div><div class="fnote">−<span class="slot"> </span>%</div></div>
+<div class="fstage"><div class="fbar" data-zh="通过准入" style="width:52%">Admitted</div><div class="fnote">−<span class="slot"> </span>%</div></div>
+<div class="fstage"><div class="fbar" data-zh="领取成功" style="width:38%">Claimed</div><div class="fnote">−<span class="slot"> </span>%</div></div>
+<div class="fstage"><div class="fbar" data-zh="完成支付" style="width:29%">Paid</div><div class="fnote">−<span class="slot"> </span>%</div></div>
+<div class="fstage"><div class="fbar" data-zh="次日回访" style="width:21%">Returned next day</div><div class="fnote">−<span class="slot"> </span>%</div></div>
+</div>
+<figcaption data-zh="此处只表示环节顺序与形态；百分比留空，按每场活动填入真实数据。">Stage order and shape; percentage slots left blank for real per-campaign figures.</figcaption>
+<div class="lbl" data-zh="具体案例 · 一个洞察">concrete example · one insight</div>
+<div class="star">
+<div><span data-zh="领取 → 支付 的流失集中在某一个渠道，且只出现在 Android。">claim → paid dropped hardest on one channel, Android only.</span></div>
+<div><span data-zh="该人群 wait_ms 的 p95 是其他人的 4 倍：支付页还没加载完，令牌就过期了。">wait_ms p95 there was 4× the rest: the token expired before the payment page loaded.</span></div>
+<div><span data-zh="延长令牌有效期，在等待页阶段预加载支付页，下一场复测。">lengthened token TTL, preloaded the payment page during the lobby, retested next drop.</span></div>
+<div class="res"><span data-zh="这条修复被写进后续活动的上线检查清单，成为默认项。">the fix became a default in the following campaign’s launch checklist.</span></div>
+</div>
+<div class="lbl" data-zh="体现的能力">skills demonstrated</div>
+<div class="skills"><span class="on" data-zh="漏斗分析">funnel analysis</span><span class="on" data-zh="实验设计">experiment design</span><span data-zh="埋点方案负责">tracking spec ownership</span><span data-zh="ELK 链路理解">ELK pipeline literacy</span><span data-zh="不完美数据下的决策">decisions on imperfect data</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 05 -->
+<section class="proj" id="migration">
+<div class="phead">
+<div class="pnum">05</div>
+<div><h2 data-zh="订单系统迁移：全程保留退路">Order migration with the exit kept open</h2>
+<div class="meta"><em data-zh="用户订单系统">User order system</em><span data-zh="· 旧门户 → 新平台 · 同期推进数字化营销学习平台上线"> · legacy portal → new platform · plus rollout of a digital marketing learning platform</span></div></div>
+</div>
+<div class="body">
+<div class="star">
+<div><span data-zh="线上订单、真实资金，下游报表还建立在各团队之间含义早已悄悄漂移的字段上。">Live orders, real money, and downstream reports built on fields whose meaning had quietly drifted between teams.</span></div>
+<div><span data-zh="我的角色：参与制定分阶段方案，并负责其中最“组织性”的部分——谁在读这份数据、坏了会影响谁、什么时候迁。">My role: contribute the phasing and own the organisational half — who reads this data, what breaks for them, when they move.</span></div>
+<div><span data-zh="双写并以旧系统为准；影子读逐字段比对；历史数据回填并每晚对账；灰度只在量化门槛达标时放大；切换后旧系统继续保温。">Dual write with legacy as truth, shadow reads compared field by field, backfill reconciled nightly, canary widened only on a numeric gate, legacy kept warm after cutover.</span></div>
+<div class="res"><span data-zh="订单改由新平台承接，全程没有任何一个时间窗口让订单失去归属；系统效率与跨团队数据协作同步改善。">Served from the new platform with no window where an order was unaccounted for; better efficiency and cross-team data collaboration.</span></div>
+</div>
+<div class="lbl" data-zh="流程图 · 切到新系统的流量比例">shape · traffic to the new system</div>
+<figure class="scroll-x">
+<svg aria-label="Phased ramp: contract, dual write, shadow read, backfill, canary, cutover" class="dia" role="img" viewbox="0 0 880 176">
+<g stroke="var(--wire)"><line x1="46" x2="856" y1="126" y2="126"></line><line x1="46" x2="46" y1="14" y2="126"></line></g>
+<g fill="var(--mute)" font-family="IBM Plex Mono, monospace" font-size="10"><text x="6" y="32">100%</text><text x="14" y="80">10%</text><text x="20" y="124">0%</text></g>
+<path d="M46,124 L186,124 L326,124 L466,124 L466,116 L606,116 L606,80 L716,80 L716,28 L856,28" fill="none" stroke="var(--go)" stroke-linejoin="round" stroke-width="2.6"></path>
+<g stroke="var(--wire-soft)" stroke-dasharray="3 4"><line x1="186" x2="186" y1="14" y2="126"></line><line x1="326" x2="326" y1="14" y2="126"></line><line x1="466" x2="466" y1="14" y2="126"></line><line x1="606" x2="606" y1="14" y2="126"></line><line x1="716" x2="716" y1="14" y2="126"></line></g>
+<g fill="var(--ink)" font-family="Space Grotesk, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle">
+<text data-zh="字段契约" x="116" y="146">contract</text><text data-zh="双写" x="256" y="146">dual write</text><text data-zh="影子读" x="396" y="146">shadow read</text>
+<text data-zh="回填" x="536" y="146">backfill</text><text data-zh="灰度" x="661" y="146">canary</text><text data-zh="切换" x="786" y="146">cutover</text>
+</g>
+<g fill="var(--mute)" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="middle">
+<text data-zh="字段映射冻结" x="116" y="162">field map frozen</text><text data-zh="以旧系统为准" x="256" y="162">legacy = truth</text><text data-zh="差异记录" x="396" y="162">diff logged</text>
+<text data-zh="每晚对账" x="536" y="162">reconciled nightly</text><text data-zh="差异平稳才放量" x="661" y="162">widen on flat diff</text><text data-zh="旧系统保温" x="786" y="162">legacy kept warm</text>
+</g>
+<text data-zh="↩ 每个关口都可回滚" fill="var(--hot)" font-family="IBM Plex Mono, monospace" font-size="10.5" x="452" y="12">↩ rollback available at every gate</text>
+</svg>
+</figure>
+<div class="cols">
+<div>
+<div class="lbl" data-zh="技术栈 · 每一层回答的问题">stack · what each layer answers</div>
+<div class="ladder">
+<div class="rung"><span class="tech" data-zh="字段映射契约">Field mapping contract</span><span class="q"><span data-zh="“两边说的 status 是同一个意思吗？”">“Do both systems mean the same by ‘status’?”</span><span class="ex" data-zh="旧系统的 CLOSED = 已支付且已交付；新平台把它拆成两个状态">legacy CLOSED = paid + delivered; new platform split it in two</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="双写">Dual write</span><span class="q"><span data-zh="“新系统如何尽早拿到真实数据？”">“How does the new system get real data early?”</span><span class="ex" data-zh="新订单同时写入两边；旧系统仍是唯一事实来源">every new order lands in both; legacy stays the system of record</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="消息总线镜像">Message bus mirror</span><span class="q"><span data-zh="“如何镜像又不增加用户可感知的延迟？”">“How do we mirror without user-visible latency?”</span><span class="ex" data-zh="异步发布、失败重试；下单流程永远不等它">async publish, retried; checkout never waits for it</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech" data-zh="影子读与差异比对">Shadow read + diff</span><span class="q"><span data-zh="“同一个请求，新系统会给出一样的答案吗？”">“Would the new system have answered the same?”</span><span class="ex" data-zh="两边都查，返回旧系统结果，按字段统计不一致">both queried, legacy served, mismatches counted per field</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="回填与对账任务">Backfill + reconcile job</span><span class="q"><span data-zh="“每晚的笔数、金额、状态都能对上吗？”">“Do counts, totals and statuses match every night?”</span><span class="ex" data-zh="按月批量回填，之后每日自动对账">batch by month, then a daily automated reconciliation</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech" data-zh="开关灰度">Feature-flag canary</span><span class="q"><span data-zh="“如何安全地放量？”">“How do we widen traffic safely?”</span><span class="ex" data-zh="1% → 10% → 50%，按省份推进，达标才放大">1% → 10% → 50%, province by province, on a numeric gate</span></span></div>
+<div class="drop"></div>
+<div class="rung h"><span class="tech" data-zh="旧系统保温">Legacy kept warm</span><span class="q"><span data-zh="“万一要回退怎么办？”">“How do we go back?”</span><span class="ex" data-zh="切换后仍继续接收写入，直到下游全部迁完">still receiving writes after cutover, until consumers have moved</span></span></div>
+</div>
+</div>
+<div>
+<div class="lbl" data-zh="机制 · 双写与影子比对">mechanism · dual write + shadow diff</div>
+<div class="codehead">order-write.js</div>
+<pre><code><span class="c" data-zh="// 用户侧延迟只取决于事实来源系统">// user latency depends only on the system of record</span>
+<span class="k">const</span> saved = <span class="k">await</span> legacy.write(order);
+bus.publish(<span class="s">'order.mirror'</span>, order);   <span class="c" data-zh="// 异步 · 可重试 · 永不阻塞">// async · retried · never blocks</span>
 
-      <section class="section" id="vote">
-        <div class="section-head">
-          <div>
-            <h2><span class="index">5</span> 电子投票</h2>
-            <p class="subtitle">支撑表决、评选、意见征集等会中互动场景。</p>
-          </div>
-        </div>
-        <div class="content-grid">
-          <div>
-            <ol class="steps">
-              <li>管理端创建投票议题，设置投票对象、选项和参与范围。</li>
-              <li>参会人员通过手机端或会议入口进入投票页面。</li>
-              <li>用户完成选择后提交，系统自动记录结果并防止重复投票。</li>
-              <li>后台实时汇总票数，用于会议现场展示或会后存档。</li>
-            </ol>
-            <div class="note">即使当前设计包里没有完整的投票详情页，也可以把这一模块讲成“会议数字化互动能力”的一部分，与签到、二维码一起构成会中服务闭环。</div>
-          </div>
-          <div class="shot">
-            <img src="wdo_extracted/APP端主k-1.png" alt="移动端活动视觉图" />
-            <div class="small">移动端活动视觉图可作为会中交互入口示意，说明投票通常在手机端完成。</div>
-          </div>
-        </div>
-      </section>
+<span class="c" data-zh="// 影子读：两边都答，只返回旧系统，记录差异">// shadow read: answer twice, serve legacy, log the delta</span>
+<span class="k">const</span> [a, b] = <span class="k">await</span> Promise.allSettled([legacy.get(id), next.get(id)]);
+<span class="k">for</span> (<span class="k">const</span> f <span class="k">of</span> diffFields(a, b))
+  metrics.inc(<span class="s">'shadow.mismatch'</span>, { field: f });
+<span class="k">return</span> a;
 
-      <section class="section" id="qrcode">
-        <div class="section-head">
-          <div>
-            <h2><span class="index">6</span> 二维码管理</h2>
-            <p class="subtitle">二维码是连接报名、签到和身份核验的关键媒介。</p>
-          </div>
-        </div>
-        <div class="content-grid">
-          <div>
-            <ol class="steps">
-              <li>系统根据报名记录或会员身份生成专属二维码。</li>
-              <li>二维码可关联参会信息、人员身份和签到状态。</li>
-              <li>工作人员通过扫描二维码完成现场识别、核验和签到。</li>
-              <li>若存在分会场、嘉宾类别或不同权限，也可以通过二维码进行区分管理。</li>
-            </ol>
-            <div class="note">这一模块建议和电子签到一起讲。你可以把二维码描述为“系统全流程的统一凭证”，这样观众更容易理解它的重要性。</div>
-          </div>
-          <div class="shot">
-            <img src="wdo_extracted/特殊按钮.png" alt="系统按钮组件图" />
-            <div class="small">组件资源可辅助说明系统会生成可操作的电子凭证、入口按钮和核验动作。</div>
-          </div>
-        </div>
-      </section>
+<span class="c" data-zh="// 放量门槛 —— 是一个数字，不是一种感觉">// the gate — widening is a number, not an opinion</span>
+<span class="k">const</span> canWiden = mismatchRate &lt; <span class="r">0.001</span>
+              &amp;&amp; p99(next) &lt;= p99(legacy)
+              &amp;&amp; countsReconcile;</code></pre>
+<div class="lbl" data-zh="体现的能力">skills demonstrated</div>
+<div class="skills"><span class="on" data-zh="风险排序">risk sequencing</span><span class="on" data-zh="干系人对齐">stakeholder alignment</span><span data-zh="数据契约">data contracts</span><span data-zh="放量门槛">rollout gating</span><span data-zh="迁移方案">migration planning</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 06 -->
+<section class="proj" id="learning">
+<div class="phead">
+<div class="pnum">06</div>
+<div><h2 data-zh="面向各省团队的学习培训渠道">Learning channel for provincial teams</h2>
+<div class="meta"><em data-zh="数字化培训项目">Digital training initiative</em><span data-zh="· 以数据分析支撑渠道运营 · 学习、考试、认证、度量"> · channel operations supported with data analysis · learn, test, certify, measure</span></div></div>
+</div>
+<div class="body">
+<div class="star">
+<div><span data-zh="产品在总部设计，落地靠各省执行。培训只有文档和偶尔的宣讲，能力缺口往往等到某地活动出问题才暴露。">Products designed centrally, executed in every province. Training was documents and occasional sessions, so gaps only surfaced when a launch went badly somewhere.</span></div>
+<div><span data-zh="我的角色：设计这条渠道——课件形式、考试规则、补考策略、权限模型——并分析结果说明了什么。">My role: design the channel — module format, test rules, retake policy, permissions — and analyse what the results meant.</span></div>
+<div><span data-zh="把完课当成漏斗来看；考试不通过只把学员送回没掌握的那一节；用试题分析区分“题目本身有问题”和“团队确实没准备好”。">Treated completion as a funnel, made a failed test return the learner to the missed lesson only, and used item analysis to tell a broken question apart from an unprepared team.</span></div>
+<div class="res"><span data-zh="各省团队统一到一条培训渠道，用可见的完课率与成绩替代对“谁准备好了”的猜测。">One training channel across provincial teams, with visible completion and score data replacing assumptions about readiness.</span></div>
+</div>
+<div class="lbl" data-zh="流程图 · 课件生命周期">shape · module lifecycle</div>
+<figure class="scroll-x">
+<svg aria-label="Publish, assign, learn, test, certify, item analysis feeding revision" class="dia" role="img" viewbox="0 0 880 170">
+<defs><marker id="a6" markerheight="8" markerwidth="8" orient="auto" refx="7" refy="4"><path d="M0,0 L8,4 L0,8 z" fill="var(--mute)"></path></marker></defs>
+<g fill="none" marker-end="url(#a6)" stroke="var(--mute)" stroke-width="1.3">
+<line x1="134" x2="166" y1="42" y2="42"></line><line x1="270" x2="302" y1="42" y2="42"></line><line x1="406" x2="438" y1="42" y2="42"></line>
+<line x1="542" x2="574" y1="42" y2="42"></line><line x1="678" x2="710" y1="42" y2="42"></line>
+<path d="M490,62 L490,92 L346,92 L346,62"></path><path d="M792,62 L792,120 L70,120 L70,62"></path>
+</g>
+<g fill="var(--ink)" font-family="Space Grotesk, sans-serif" font-size="12" font-weight="600" text-anchor="middle">
+<rect fill="var(--surface-2)" height="38" rx="9" stroke="var(--wire)" width="128" x="6" y="24"></rect><text data-zh="发布课件" x="70" y="48">Publish module</text>
+<rect fill="var(--surface-2)" height="38" rx="9" stroke="var(--wire)" width="104" x="166" y="24"></rect><text data-zh="指派" x="218" y="48">Assign</text>
+<rect fill="var(--surface-2)" height="38" rx="9" stroke="var(--wire)" width="104" x="302" y="24"></rect><text data-zh="学习" x="354" y="48">Learn</text>
+<rect fill="var(--surface-2)" height="38" rx="9" stroke="var(--wire)" width="104" x="438" y="24"></rect><text data-zh="考试" x="490" y="48">Test</text>
+<rect fill="var(--go-wash)" height="38" rx="9" stroke="var(--go)" width="104" x="574" y="24"></rect><text data-zh="认证" fill="var(--go-ink)" x="626" y="48">Certify</text>
+<rect fill="var(--vio-wash)" height="38" rx="9" stroke="var(--vio)" width="164" x="710" y="24"></rect><text data-zh="试题分析" fill="var(--vio)" x="792" y="48">Item analysis</text>
+</g>
+<g fill="var(--mute)" font-family="IBM Plex Mono, monospace" font-size="10.5" text-anchor="middle">
+<text data-zh="不通过 → 只回到没掌握的那一节" x="418" y="106">fail → back to the missed lesson only</text>
+<text data-zh="在下一场活动依赖它之前，重写薄弱题目" x="430" y="136">weak items rewritten before the next campaign depends on them</text>
+</g>
+</svg>
+</figure>
+<div class="cols">
+<div>
+<div class="lbl" data-zh="技术栈 · 每一层回答的问题">stack · what each layer answers</div>
+<div class="ladder">
+<div class="rung"><span class="tech" data-zh="课件与题库">Module + item bank</span><span class="q"><span data-zh="“这场活动之前，团队必须掌握什么？”">“What must a team know before this campaign?”</span><span class="ex" data-zh="一次产品变更 → 一个短课件，配套试题">one product change → one short module with items attached</span></span></div>
+<div class="drop"></div>
+<div class="rung h"><span class="tech" data-zh="指派与提醒">Assignment + reminders</span><span class="q"><span data-zh="“谁要学，什么时候之前学完？”">“Who has to do it, by when?”</span><span class="ex" data-zh="最大流失就在这里 —— 是排期问题，不是内容问题">the biggest drop sits here — scheduling, not content</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="学员端">Learner view</span><span class="q"><span data-zh="“能在两位客户之间用手机学完吗？”">“Can this be done on a phone between customers?”</span><span class="ex" data-zh="5 分钟一节，断点续学">5-minute lessons, resumes exactly where they stopped</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="考试引擎">Test engine</span><span class="q"><span data-zh="“补考怎么不会是同一张卷子？”">“How is a retake not the same paper twice?”</span><span class="ex" data-zh="每次作答从题库随机抽题">items drawn randomly from the bank per attempt</span></span></div>
+<div class="drop"></div>
+<div class="rung"><span class="tech" data-zh="认证记录">Certification record</span><span class="q"><span data-zh="“谁有资格承接这场活动？”">“Who is cleared to run the campaign?”</span><span class="ex" data-zh="各省在派活之前先看认证记录">province checks the record before assigning campaign duties</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech" data-zh="试题分析">Item analytics</span><span class="q"><span data-zh="“是题目有问题，还是团队没准备好？”">“Broken question, or unprepared team?”</span><span class="ex" data-zh="难度低 + 区分度低 ⇒ 是题目写错了">low p-value + low discrimination ⇒ the item is wrong</span></span></div>
+<div class="drop"></div>
+<div class="rung v"><span class="tech" data-zh="省份看板">Province dashboard</span><span class="q"><span data-zh="“缺口在哪里，是谁的缺口？”">“Where is the gap, and whose is it?”</span><span class="ex" data-zh="本省与全国均值对比；总部据此决定重发哪一节">own teams vs national average; HQ sees what to republish</span></span></div>
+</div>
+</div>
+<div>
+<div class="lbl" data-zh="机制 · 先怀疑题目，再怀疑学员">mechanism · blame the item, not the learner</div>
+<div class="codehead">item-analysis.sql</div>
+<pre><code><span class="k">SELECT</span> item_id,
+       <span class="k">AVG</span>(correct)               <span class="k">AS</span> p_value,        <span class="c" data-zh="-- 太难？">-- too hard?</span>
+       <span class="k">CORR</span>(correct, total_score) <span class="k">AS</span> discrimination, <span class="c" data-zh="-- 还是题目本身有问题？">-- or just bad?</span>
+       <span class="k">COUNT</span>(*)                   <span class="k">AS</span> attempts
+<span class="k">FROM</span> attempt_items <span class="k">JOIN</span> attempts <span class="k">USING</span> (attempt_id)
+<span class="k">GROUP BY</span> item_id
+<span class="k">HAVING</span> <span class="k">AVG</span>(correct) &lt; <span class="r">0.4</span>
+   <span class="k">AND</span> <span class="k">CORR</span>(correct, total_score) &lt; <span class="r">0.2</span>;
+<span class="c" data-zh="-- 高分学员也答错 ⇒ 重写这道题">-- strong learners failing it too ⇒ rewrite the question</span></code></pre>
+<div class="lbl" data-zh="漏斗 · 完课">funnel · completion</div>
+<div class="funnel">
+<div class="fstage"><div class="fbar" data-zh="已指派" style="width:100%">Assigned</div><div class="fnote" data-zh="由省级管理员指派">by province admin</div></div>
+<div class="fstage"><div class="fbar" data-zh="已开始" style="width:62%">Started</div><div class="fnote" data-zh="最大流失">largest loss</div></div>
+<div class="fstage"><div class="fbar" data-zh="学完课程" style="width:48%">Finished lessons</div><div class="fnote" data-zh="支持断点续学">resume supported</div></div>
+<div class="fstage"><div class="fbar v" data-zh="考试通过" style="width:36%">Passed</div><div class="fnote" data-zh="题库随机补考">retake from bank</div></div>
+</div>
+<div class="lbl" data-zh="体现的能力">skills demonstrated</div>
+<div class="skills"><span class="on" data-zh="学习产品设计">learning product design</span><span class="on" data-zh="完课漏斗">completion funnel</span><span data-zh="内容运营">content operations</span><span data-zh="角色权限">role-based permissions</span><span data-zh="测评分析">assessment analytics</span></div>
+</div>
+</div>
+</div>
+</section>
+<div class="foot" data-zh="六个项目 · 流程、技术栈与机制">Six projects · STAR, stacks, mechanisms</div>
+</main>
+</div>
 
-      <section class="section" id="website">
-        <div class="section-head">
-          <div>
-            <h2><span class="index">7</span> 中英文官网</h2>
-            <p class="subtitle">对外展示组织形象、活动信息和重点内容的统一窗口。</p>
-          </div>
-        </div>
-        <div class="content-grid">
-          <div>
-            <ol class="steps">
-              <li>用户访问官网首页，第一时间看到组织定位、活动主视觉和核心信息。</li>
-              <li>通过导航可进入关于组织、重要活动、新闻中心、会员中心、资源中心等栏目。</li>
-              <li>官网既承担品牌展示，也承担会员服务与活动入口的前台承接作用。</li>
-              <li>支持中英文内容展示后，可以进一步满足国际化传播与跨区域访问需求。</li>
-            </ol>
-            <div class="feature-list">
-              <div><strong>品牌展示</strong>首页主视觉、组织介绍、成立宣言、重点工作等模块共同塑造专业形象。</div>
-              <div><strong>活动承接</strong>重要活动区可以直接成为报名、查看详情和传播的入口。</div>
-              <div><strong>资源输出</strong>白皮书、资讯、宣传片等内容可作为外部传播资料。</div>
-              <div><strong>国际化表达</strong>中英文双语官网有利于面向国际组织、行业伙伴和海外访客进行传播。</div>
-            </div>
-          </div>
-          <div class="shot">
-            <img src="wdo_extracted/Desktop - 4.png" alt="WDO官网首页完整设计图" />
-            <div class="small">这是当前设计包里最完整的一张官网首页图，适合在演示中重点展示。</div>
-          </div>
-        </div>
-        <div class="gallery">
-          <div>
-            <img src="wdo_extracted/APP端主k.png" alt="活动主视觉图" />
-            <div class="small">活动主视觉，可用于中英文站首页 Banner 或专题页首屏。</div>
-          </div>
-          <div>
-            <img src="wdo_crops/website_activity.png" alt="官网活动模块图" />
-            <div class="small">活动列表/详情模块示意，适合用于讲“官网与活动系统联动”。</div>
-          </div>
-        </div>
-      </section>
+<script>
+(function () {
+  var KEY = 'pmh-lang';
+  var TITLE = { en: 'Six projects \u2014 STAR, stacks and mechanisms',
+                zh: '\u516d\u4e2a\u9879\u76ee \u2014 \u6d41\u7a0b\u3001\u6280\u672f\u6808\u4e0e\u5b9e\u73b0\u673a\u5236' };
 
-      <section class="panel" id="summary">
-        <h2>总结与讲解建议</h2>
-        <p class="lead">整套系统可以概括为一句话：以会员体系为基础，以会议活动为核心，以官网为对外窗口，形成前后台协同的一体化数字平台。</p>
-        <ol class="steps">
-          <li>先从官网或活动入口切入，展示系统整体形象与业务场景。</li>
-          <li>再按“会员注册 → 会员信息管理 → 参会报名”讲清楚会前流程。</li>
-          <li>接着讲“电子签到 → 电子投票 → 二维码管理”，体现会中数字化能力。</li>
-          <li>最后回到“中英文官网”，收束到品牌展示与国际化传播价值。</li>
-        </ol>
-        <div class="note">这份网页版手册更适合在线阅读和培训。如果你下一步需要，我可以继续把它改成更像产品帮助中心的样式，比如加折叠目录、图片放大、每一步的操作提示框、甚至导出成可分享的单文件 HTML。</div>
-      </section>
+  // Simplified Chinese systems get Chinese; everything else (including zh-TW/HK/MO) gets English.
+  function detect() {
+    var list = (navigator.languages && navigator.languages.length)
+      ? navigator.languages : [navigator.language || navigator.userLanguage || 'en'];
+    for (var i = 0; i < list.length; i++) {
+      var l = String(list[i] || '').toLowerCase();
+      if (l.indexOf('zh') === 0) {
+        if (/hant|tw|hk|mo/.test(l)) return 'en';
+        return 'zh';
+      }
+    }
+    return 'en';
+  }
 
-      <div class="footer">WDO 项目系统图文演示手册 · 由设计资源整理生成</div>
-    </main>
-  </div>
+  var nodes = document.querySelectorAll('[data-zh]');
+  var btns  = document.querySelectorAll('.langsw button');
+
+  function apply(lang) {
+    if (lang !== 'zh') lang = 'en';
+    document.documentElement.lang = (lang === 'zh') ? 'zh-CN' : 'en';
+    document.title = TITLE[lang];
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      if (!n.hasAttribute('data-en')) n.setAttribute('data-en', n.textContent);
+      n.textContent = (lang === 'zh') ? n.getAttribute('data-zh') : n.getAttribute('data-en');
+    }
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].setAttribute('aria-pressed', btns[j].getAttribute('data-lang') === lang ? 'true' : 'false');
+    }
+    try { localStorage.setItem(KEY, lang); } catch (e) {}
+  }
+
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  apply(saved || detect());
+
+  for (var k = 0; k < btns.length; k++) {
+    btns[k].addEventListener('click', function () { apply(this.getAttribute('data-lang')); });
+  }
+})();
+</script>
 </body>
 </html>
